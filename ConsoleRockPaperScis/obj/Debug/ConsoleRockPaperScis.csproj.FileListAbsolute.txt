@@ -7,3 +7,5 @@ D:\Programs\JetBrains Rider 2023.3.2\Projects\ConsoleRockPaperScis\ConsoleRockPa
 D:\Programs\JetBrains Rider 2023.3.2\Projects\ConsoleRockPaperScis\ConsoleRockPaperScis\bin\Debug\System.ValueTuple.dll
 D:\Programs\JetBrains Rider 2023.3.2\Projects\ConsoleRockPaperScis\ConsoleRockPaperScis\bin\Debug\System.ValueTuple.xml
 D:\Programs\JetBrains Rider 2023.3.2\Projects\ConsoleRockPaperScis\ConsoleRockPaperScis\obj\Debug\ConsoleRockPaperScis.csproj.CopyComplete
+D:\Programs\JetBrains Rider 2023.3.2\Projects\ConsoleRockPaperScis\ConsoleRockPaperScis\bin\Debug\Newtonsoft.Json.dll
+D:\Programs\JetBrains Rider 2023.3.2\Projects\ConsoleRockPaperScis\ConsoleRockPaperScis\bin\Debug\Newtonsoft.Json.xml
