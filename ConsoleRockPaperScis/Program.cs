@@ -32,7 +32,15 @@ namespace ConsoleRockPaperScis {
     internal class Program {
         private readonly static Random Rng = new Random();
         private readonly static JsonSerializer Serializer = new JsonSerializer();
-        private const string HelpPrompt = "This will be \'help\' console prompt";
+        private const string HelpPrompt = "List of awailable commands:\n" +
+                                          "exit - finish current session\n" +
+                                          "help - display this prompt\n" +
+                                          "statistics - display player statistics stored on current device\n" +
+                                          "play - start new match agains pc.\n" +
+                                          "after \'play\' command, you will be asked for amount of clashes(rounds) in this match.\n" +
+                                          "then you type \'rock\', \'paper\' or \'scissors\' like any other commands to select your option.\n" +
+                                          "game will end after asked amount of clashes were played.\n\n" +
+                                          "any command can be shortend by typing first letters of the command (eg. \'exit\' can be typed as \'e\')";
         private const string WelcomePrompt =
             "This is a simple console Rock-Paper-Scissors game!\n" +
             "for more command information type \'help\' or \'exit\' to finish the session";
