@@ -5,30 +5,6 @@ using System.Linq;
 using Newtonsoft.Json;
 
 namespace ConsoleRockPaperScis {
-    # region Enums
-    
-    public enum ConsoleCommand {
-        Exit,
-        Play,
-        Help,
-        Statistics,
-        NoCommand
-    }
-    
-    public enum GameOption {
-        Rock = 0,
-        Paper = 1,
-        Scissors = 2
-    }
-    
-    public enum GameResult {
-        PlayerWin,
-        PlayerLoss,
-        Tie
-    }
-    
-    #endregion
-    
     internal class Program {
         private readonly static Random Rng = new Random();
         private readonly static JsonSerializer Serializer = new JsonSerializer();

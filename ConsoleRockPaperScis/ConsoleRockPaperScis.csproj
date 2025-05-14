@@ -46,6 +46,9 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="ConsoleCommand.cs" />
+        <Compile Include="GameOption.cs" />
+        <Compile Include="GameResult.cs" />
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
