@@ -1,4 +1,4 @@
-﻿namespace ConsoleRockPaperScis {
+﻿namespace ConsoleRockPaperScis.Enums {
     public enum ConsoleCommand {
         Exit,
         Play,

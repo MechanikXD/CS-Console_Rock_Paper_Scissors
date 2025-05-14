@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
+using ConsoleRockPaperScis.Enums;
 
 namespace ConsoleRockPaperScis {
     internal class Program {
         private readonly static Random Rng = new Random();
-        private readonly static JsonSerializer Serializer = new JsonSerializer();
         private const string HelpPrompt = "List of awailable commands:\n" +
                                           "exit - finish current session\n" +
                                           "help - display this prompt\n" +
@@ -85,7 +83,6 @@ namespace ConsoleRockPaperScis {
         
         private static void StartSession() {
             Console.WriteLine(WelcomePrompt);
-            ReadStatisticsFromFile();
             while (true) {
                 Console.Write("Enter command: ");
                 var input = ReadPlayerInput();
@@ -95,7 +92,6 @@ namespace ConsoleRockPaperScis {
                             Console.WriteLine(HelpPrompt);
                             break;
                         case ConsoleCommand.Exit:
-                            SerializeStatistics();
                             return;
                         case ConsoleCommand.Statistics:
                             foreach (var pair in GetStatistics()) {
@@ -250,24 +246,5 @@ namespace ConsoleRockPaperScis {
         } 
 
         #endregion
-
-        private static void SerializeStatistics() {
-                    var serialized = JsonConvert.SerializeObject(GetStatistics());
-                    File.WriteAllText("PlayerStatistics.json", serialized);
-                }
-
-        private static void ReadStatisticsFromFile() {
-            var fileStream = File.Open("PlayerStatistics.json", FileMode.OpenOrCreate);
-            var data = Serializer.Deserialize<Dictionary<string, int>>(
-                    new JsonTextReader(new StreamReader(fileStream)));
-            fileStream.Close();
-            if (data == null) return; // file probably empty
-
-            _rockChosen = data["Rock Chosen"];
-            _paperChosen = data["Paper Chosen"];
-            _scissorsChosen = data["Scissors Chosen"];
-            _totalGamesPlayed = data["Total Games"];
-            _gamesWon = data["Games Won"];
-        }
     }
 }
