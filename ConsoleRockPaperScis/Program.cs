@@ -65,21 +65,47 @@ namespace ConsoleRockPaperScis {
 
         #region Game Statistics
 
+        private static string _playerNickname;
+        private static uint _playerAge;
+
         private static int _rockChosen;
         private static int _paperChosen;
         private static int _scissorsChosen;
 
         private static int _totalGamesPlayed;
         private static int _gamesWon;
-        private static int _gamesLost;
 
         #endregion
         
         public static void Main(string[] args) {
-            StartSession();
+            if (TryRegisterUser()) {
+                StartSession();
+            }
         }
 
         #region Console Interactions
+
+        private static bool TryRegisterUser() {
+            Console.Write("Please Enter your username: ");
+            _playerNickname = Console.ReadLine();
+            Console.Write($"Hello {_playerNickname}! Please tell me your age: ");
+            
+            var parseResult = uint.TryParse(Console.ReadLine(), out var age);
+            while (!parseResult) {
+                Console.Write("Can't read the number, please try again: ");
+                parseResult = uint.TryParse(Console.ReadLine(), out age);
+            }
+
+            _playerAge = age;
+
+            if (_playerAge >= 12) {
+                return true;
+            }
+
+            Console.WriteLine("Sorry, users under age of 12 can't play this game :(");
+            return false;
+
+        }
         
         private static void StartSession() {
             Console.WriteLine(WelcomePrompt);
@@ -210,15 +236,7 @@ namespace ConsoleRockPaperScis {
                         nameof(playerOption));
             }
 
-            switch (gameResult) {
-                case GameResult.PlayerWin:
-                    _gamesWon += 1;
-                    break;
-                case GameResult.PlayerLoss:
-                    _gamesLost += 1;
-                    break;
-            }
-
+            if (gameResult == GameResult.PlayerWin) _gamesWon++;
             _totalGamesPlayed += 1;
             
             return gameResult;
@@ -231,8 +249,6 @@ namespace ConsoleRockPaperScis {
                 ["Scissors Chosen"] = _scissorsChosen,
                 ["Total Games"] = _totalGamesPlayed,
                 ["Games Won"] = _gamesWon,
-                ["Games Tie"] = _totalGamesPlayed - _gamesWon - _gamesLost,
-                ["Games Lost"] = _gamesLost,
                 ["Win Rate"] = _totalGamesPlayed == 0 ? 0 : _gamesWon / _totalGamesPlayed
             };
         }
@@ -276,7 +292,6 @@ namespace ConsoleRockPaperScis {
             _scissorsChosen = data["Scissors Chosen"];
             _totalGamesPlayed = data["Total Games"];
             _gamesWon = data["Games Won"];
-            _gamesLost = data["Games Lost"];
         }
     }
 }
