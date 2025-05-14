@@ -5,19 +5,30 @@ using ConsoleRockPaperScis.Enums;
 
 namespace ConsoleRockPaperScis {
     internal class Program {
-        private readonly static Random Rng = new Random();
+        #region Text Fields
+        
         private const string HelpPrompt = "List of awailable commands:\n" +
                                           "exit - finish current session\n" +
                                           "help - display this prompt\n" +
                                           "statistics - display player statistics stored on current device\n" +
                                           "play - start new match agains pc.\n" +
-                                          "after \'play\' command, you will be asked for amount of clashes(rounds) in this match.\n" +
                                           "then you type \'rock\', \'paper\' or \'scissors\' like any other commands to select your option.\n" +
                                           "game will end after asked amount of clashes were played.\n\n" +
                                           "any command can be shortend by typing first letters of the command (eg. \'exit\' can be typed as \'e\')";
-        private const string WelcomePrompt =
-            "This is a simple console Rock-Paper-Scissors game!\n" +
-            "for more command information type \'help\' or \'exit\' to finish the session";
+        private readonly static string[] VictoryPrompts = {
+            "Sharp moves, solid win!", "That was a masterstroke!", "Victory suits you well!",
+            "Nothing can stop you now!", "You crushed it like a pro!"
+        };
+        private readonly static string[] LosePrompts = {
+            "Luck wasn't on your side... this time.", "Every loss is a step to greatness.",
+            "You'll get 'em next time!", "But hey, even legends stumble.", "It’s just a warm-up round!",
+            "Keep your head up—you're learning fast!"
+        };
+        private const string HorizontalSeparator = "==============================================";
+        
+        #endregion
+        
+        private readonly static Random Rng = new Random();
         /*
         Player -> | Rock | Paper | Scissors
         -----------------------------------
@@ -60,6 +71,7 @@ namespace ConsoleRockPaperScis {
         #region Console Interactions
 
         private static bool TryRegisterUser() {
+            Console.WriteLine("This is a simple console Rock-Paper-Scissors game!\n");
             Console.Write("Please Enter your username: ");
             _playerNickname = Console.ReadLine();
             Console.Write($"Hello {_playerNickname}! Please tell me your age: ");
@@ -82,7 +94,7 @@ namespace ConsoleRockPaperScis {
         }
         
         private static void StartSession() {
-            Console.WriteLine(WelcomePrompt);
+            Console.WriteLine("Welcome! for more information type \'help\' or \'exit\' to finish this session");
             while (true) {
                 Console.Write("Enter command: ");
                 var input = ReadPlayerInput();
@@ -92,20 +104,16 @@ namespace ConsoleRockPaperScis {
                             Console.WriteLine(HelpPrompt);
                             break;
                         case ConsoleCommand.Exit:
+                            Console.WriteLine($"Bye {_playerNickname}, see you next time!");
                             return;
                         case ConsoleCommand.Statistics:
+                            Console.WriteLine($"{_playerNickname}'s(age of {_playerAge}) statistic:");
                             foreach (var pair in GetStatistics()) {
                                 Console.WriteLine($"{pair.Key}: {pair.Value}");
                             }
                             break;
                         case ConsoleCommand.Play:
-                            Console.Write("Enter number of clashes in following match: ");
-                            if (!int.TryParse(ReadPlayerInput(), out var numberOfClashes)) {
-                                Console.WriteLine("Can't read number of clashes, will be set to default (5)");
-                                numberOfClashes = 5;
-                            }
-                            
-                            StartGame(numberOfClashes);
+                            StartGame(3);
                             break;
                         default:
                             Console.WriteLine("Something went wrong... try again");
@@ -138,7 +146,7 @@ namespace ConsoleRockPaperScis {
             var matchesWon = 0;
             var matchesLost = 0;
             for (var i = 0; i < clashesInMatch; i++) {
-                Console.WriteLine($"Clash {i + 1} / {clashesInMatch}");
+                Console.WriteLine($"Round {i + 1} / {clashesInMatch}");
                 Console.Write("\nPick your fighter: ");
                 var playerInput = ReadPlayerInput();
 
@@ -152,10 +160,10 @@ namespace ConsoleRockPaperScis {
                     var matchUpResult = GetMatchUpResult(playerOption, randomOption);
                     switch (matchUpResult) {
                         case GameResult.Tie:
-                            Console.WriteLine("Game ends in a tie, try again");
+                            Console.WriteLine("Game ends in a tie");
                             break;
                         case GameResult.PlayerLoss:
-                            Console.WriteLine("You lost, better luck next time");
+                            Console.WriteLine("You lost this round");
                             matchesLost += 1;
                             break;
                         case GameResult.PlayerWin:
@@ -173,15 +181,9 @@ namespace ConsoleRockPaperScis {
                 }
             }
 
-            if (matchesWon > matchesLost) {
-                Console.WriteLine("You won the match, congrats!");
-            }
-            else if (matchesWon == matchesLost) {
-                Console.WriteLine("Match ended in tie, maybe return match?");
-            }
-            else {
-                Console.WriteLine("You lost the match, better luck next time");
-            }
+            Console.WriteLine(matchesWon > matchesLost
+                ? $"You won the match. {VictoryPrompts[Rng.Next(VictoryPrompts.Length)]}"
+                : $"You lost the match. {LosePrompts[Rng.Next(LosePrompts.Length)]}");
         }
         
         #endregion
