@@ -36,7 +36,7 @@ internal class Program {
         "      (____)",
         "---.__(___)"
     ];
-        
+
     private const string HelpPrompt = "List of awailable commands:\n" +
                                       "exit - finish current session\n" +
                                       "help - display this prompt\n" +
@@ -45,19 +45,22 @@ internal class Program {
                                       "then you type \'rock\', \'paper\' or \'scissors\' like any other commands to select your option.\n" +
                                       "game will end after asked amount of clashes were played.\n\n" +
                                       "any command can be shortend by typing first few letters of the command (eg. \'exit\' can be typed as \'e\')";
+
     private readonly static string[] VictoryPrompts = [
         "Sharp moves, solid win!", "That was a masterstroke!", "Victory suits you well!",
         "Nothing can stop you now!", "You crushed it like a pro!"
     ];
+
     private readonly static string[] LosePrompts = [
         "Luck wasn't on your side... this time.", "Every loss is a step to greatness.",
         "You'll get 'em next time!", "But hey, even legends stumble.", "It’s just a warm-up round!",
         "Keep your head up—you're learning fast!"
     ];
-        
+
     #endregion
-    
+
     private readonly static Random Rng = new Random();
+
     /*
     Player -> | Rock | Paper | Scissors
     -----------------------------------
@@ -66,10 +69,11 @@ internal class Program {
     Scissors |  W       L        T
     */
     private readonly static GameResult[,] GameResults = {
-        {GameResult.Tie, GameResult.PlayerWin, GameResult.PlayerLoss},
-        {GameResult.PlayerLoss, GameResult.Tie, GameResult.PlayerWin},
-        {GameResult.PlayerWin, GameResult.PlayerLoss, GameResult.Tie}
+        { GameResult.Tie, GameResult.PlayerWin, GameResult.PlayerLoss },
+        { GameResult.PlayerLoss, GameResult.Tie, GameResult.PlayerWin },
+        { GameResult.PlayerWin, GameResult.PlayerLoss, GameResult.Tie }
     };
+
     private readonly static HashSet<ConsoleCommand> CommandList = [
         ConsoleCommand.Exit,
         ConsoleCommand.Play,
@@ -90,7 +94,7 @@ internal class Program {
     private static int _gamesWon;
 
     #endregion
-        
+
     public static void Main(string[] args) {
         Console.Clear();
         if (TryRegisterUser()) {
@@ -101,11 +105,12 @@ internal class Program {
     #region Console Interactions
 
     private static bool TryRegisterUser() {
-        Console.WriteLine("This is a simple console Rock-Paper-Scissors game!\n");
-        Console.Write("Please Enter your username: ");
+        Console.Write("This is a simple console Rock-Paper-Scissors game!\n\n" +
+                      "Please Enter your username:");
         _playerNickname = Console.ReadLine() ?? string.Empty;
+        if (string.IsNullOrEmpty(_playerNickname)) _playerNickname = "Mr. WhiteSpace";
+
         Console.Write($"Hello {_playerNickname}! Please tell me your age: ");
-            
         var parseResult = uint.TryParse(Console.ReadLine(), out var age);
         while (!parseResult) {
             Console.Write("Can't read the number, please try again: ");
@@ -120,12 +125,12 @@ internal class Program {
 
         Console.WriteLine("Sorry, users under age of 12 can't play this game :(");
         return false;
-
     }
-        
+
     private static void StartSession() {
         Console.Clear();
-        Console.WriteLine("Welcome! for more information type \'help\' or \'exit\' to finish this session");
+        Console.WriteLine(
+            "Welcome! for more information type \'help\' or \'exit\' to finish this session");
         while (true) {
             Console.Write("\nEnter command: ");
             var input = ReadPlayerInput();
@@ -182,7 +187,7 @@ internal class Program {
         result = ConsoleCommand.NoCommand;
         return false;
     }
-    
+
     private static string MatchUpAsAscii(GameOption playerOption, GameOption otherOption) {
         var playerOptionAsAscii = playerOption switch {
             GameOption.Paper => (string[])PaperAscii.Clone(),
@@ -200,16 +205,17 @@ internal class Program {
 
         const int rowsInAscii = 6;
         const int totalLength = 50;
+
         // Invert other option
         for (var i = 0; i < rowsInAscii; i++) {
             var inverted = string.Concat(otherOptionAsAscii[i].Reverse());
             inverted = inverted.Replace('(', '#'); // temp
             inverted = inverted.Replace(')', '(');
-            inverted = inverted.Replace('#',')');
+            inverted = inverted.Replace('#', ')');
             otherOptionAsAscii[i] = inverted;
         }
 
-            
+
         var asciiBuilder = new StringBuilder();
         for (var i = 0; i < rowsInAscii; i++) {
             asciiBuilder.Append(playerOptionAsAscii[i])
@@ -221,11 +227,11 @@ internal class Program {
 
         return asciiBuilder.ToString();
     }
-        
+
     #endregion
 
     #region Game Logic
-    
+
     private static void StartGame(int roundsInMatch) {
         var matchesWon = 0;
         var matchesLost = 0;
@@ -240,7 +246,7 @@ internal class Program {
                 var playerOption = InterpretPlayerInput(playerInput);
                 var randomOption = (GameOption)Rng.Next(3);
                 Console.WriteLine($"Computer picked {randomOption.ToString()}. ");
-                    
+
                 Console.WriteLine(MatchUpAsAscii(playerOption, randomOption));
 
                 // Switch output based on game result
@@ -268,19 +274,22 @@ internal class Program {
                 i--;
             }
         }
+
         _totalGamesPlayed += 1;
         if (matchesWon > matchesLost) {
             Console.WriteLine(
                 $"You won the match. {VictoryPrompts[Rng.Next(VictoryPrompts.Length)]}");
             _gamesWon++;
         }
-        else {Console.WriteLine(
-            $"You lost the match. {LosePrompts[Rng.Next(LosePrompts.Length)]}");
+        else {
+            Console.WriteLine(
+                $"You lost the match. {LosePrompts[Rng.Next(LosePrompts.Length)]}");
         }
     }
-    
+
     private static GameResult GetMatchUpResult(GameOption playerOption, GameOption otherOption) {
         var gameResult = GameResults[(int)otherOption, (int)playerOption];
+
         // Record player statistics
         switch (playerOption) {
             case GameOption.Rock:
@@ -296,32 +305,38 @@ internal class Program {
                 throw new ArgumentException("Cannot define player input!",
                     nameof(playerOption));
         }
-            
+
         return gameResult;
     }
 
     private static GameOption InterpretPlayerInput(string playerInput) {
         GameOption playerOption;
         if (string.IsNullOrEmpty(playerInput)) {
-            throw new ArgumentException("Can't convert given player input to option", nameof(playerInput));
+            throw new ArgumentException("Can't convert given player input to option",
+                nameof(playerInput));
         }
+
         // Convert player input into Options by first letters in the word, e.g 'r' is first letter of 'rock'
         // Should prevent too long words that contain key words like 'rockpaper', since they too long.
-        if (GameOption.Paper.ToString().StartsWith(playerInput, StringComparison.CurrentCultureIgnoreCase)) {
+        if (GameOption.Paper.ToString()
+            .StartsWith(playerInput, StringComparison.CurrentCultureIgnoreCase)) {
             playerOption = GameOption.Paper;
         }
-        else if (GameOption.Rock.ToString().StartsWith(playerInput, StringComparison.CurrentCultureIgnoreCase)) {
+        else if (GameOption.Rock.ToString()
+                 .StartsWith(playerInput, StringComparison.CurrentCultureIgnoreCase)) {
             playerOption = GameOption.Rock;
         }
-        else if (GameOption.Scissors.ToString().StartsWith(playerInput, StringComparison.CurrentCultureIgnoreCase)) {
+        else if (GameOption.Scissors.ToString()
+                 .StartsWith(playerInput, StringComparison.CurrentCultureIgnoreCase)) {
             playerOption = GameOption.Scissors;
         }
         else {
-            throw new ArgumentException("Can't convert given player input to option", nameof(playerInput));
+            throw new ArgumentException("Can't convert given player input to option",
+                nameof(playerInput));
         }
 
         return playerOption;
-    } 
+    }
 
     #endregion
 }
